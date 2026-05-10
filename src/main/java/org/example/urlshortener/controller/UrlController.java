@@ -1,5 +1,7 @@
 package org.example.urlshortener.controller;
 
+import jakarta.validation.Valid;
+import org.example.urlshortener.dto.UrlRequest;
 import org.example.urlshortener.service.UrlService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,18 +21,23 @@ public class UrlController {
         this.urlService = urlService;
     }
 
-    @PostMapping("/shorten")
-    public String shorten(@RequestBody String longUrl) {
-
-        String shorten = urlService.createShortUrl(longUrl);
-
-        return shorten;
-    }
+//    @PostMapping("/shorten")
+//    public String shorten(@RequestBody String longUrl) {
+//
+//        String shorten = urlService.createShortUrl(longUrl);
+//
+//        return shorten;
+//    }
 
     @GetMapping("/{code}")
     public ResponseEntity<Void> redirect(@PathVariable String code) {
         String url = urlService.getByShortCode(code);
         URI uri = URI.create(url);
         return ResponseEntity.status(HttpStatus.FOUND).location(uri).build();
+    }
+
+    @PostMapping("/shorten")
+    public String shortenUrl(@Valid @RequestBody UrlRequest request) {
+        return urlService.createShortUrl(request.originalUrl());
     }
 }
