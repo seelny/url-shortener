@@ -1,5 +1,6 @@
 package org.example.urlshortener;
 
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -22,7 +23,7 @@ public class ErrorHandler {
     public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException exception){
         exception.getBindingResult().getFieldErrors();
         String errorMessage = exception.getBindingResult().getFieldErrors().stream()
-                .map(error -> error.getDefaultMessage())
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.joining(", "));
         ErrorResponse errorResponse = new ErrorResponse(LocalDateTime.now(),400, errorMessage);
         return ResponseEntity.status(400).body(errorResponse);

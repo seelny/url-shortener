@@ -8,8 +8,8 @@ import java.time.LocalDateTime;
 @Table(name = "shorturls")
 public class ShortUrl {
 
-    @Id // первичный ключ
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // ID генерируется бд
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "originalurl")
