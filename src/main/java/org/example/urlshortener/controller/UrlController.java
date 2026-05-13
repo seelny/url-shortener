@@ -1,6 +1,5 @@
 package org.example.urlshortener.controller;
 
-import jakarta.persistence.Column;
 import jakarta.validation.Valid;
 import org.example.urlshortener.dto.UrlRequest;
 import org.example.urlshortener.service.UrlService;
@@ -41,7 +40,6 @@ public class UrlController {
     public String shortenUrl(@Valid @RequestBody UrlRequest request) {
         return urlService.createShortUrl(request.originalUrl());
     }
-
     @DeleteMapping("/{shortCode}")
     public ResponseEntity<Void> deleteUrl(@PathVariable String shortCode) {
         urlService.deleteUrl(shortCode);
