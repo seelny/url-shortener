@@ -5,6 +5,8 @@ import org.example.urlshortener.ShortenedUrlBuilder;
 import org.example.urlshortener.UrlNotFoundException;
 import org.example.urlshortener.model.ShortUrl;
 import org.example.urlshortener.repository.UrlRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +33,14 @@ public class UrlService {
         return code;
     }
 
+    @Cacheable(value = "urls", key = "#shortcode")
     public String getByShortCode(String code) {
         return urlRepository.findByShortCode(code).orElseThrow(() -> new UrlNotFoundException("URL not found")).getOriginalUrl();
+    }
+
+    @Transactional
+    @CacheEvict(value = "urls", key = "#a0") // idk
+    public void deleteUrl(String shortCode){
+        urlRepository.deleteByShortCode(shortCode);
     }
 }

@@ -17,7 +17,7 @@ public class UrlController {
         return urlService;
     }
 
-    public UrlController(UrlService urlService){
+    public UrlController(UrlService urlService) {
         this.urlService = urlService;
     }
 
@@ -39,5 +39,10 @@ public class UrlController {
     @PostMapping("/shorten")
     public String shortenUrl(@Valid @RequestBody UrlRequest request) {
         return urlService.createShortUrl(request.originalUrl());
+    }
+    @DeleteMapping("/{shortCode}")
+    public ResponseEntity<Void> deleteUrl(@PathVariable String shortCode) {
+        urlService.deleteUrl(shortCode);
+        return ResponseEntity.noContent().build(); //204
     }
 }
