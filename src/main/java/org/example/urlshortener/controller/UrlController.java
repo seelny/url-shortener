@@ -34,6 +34,7 @@ public class UrlController {
     public ResponseEntity<Void> redirect(@PathVariable String code) {
         String url = urlService.getByShortCode(code);
         URI uri = URI.create(url);
+        urlService.trackClick(code);
         return ResponseEntity.status(HttpStatus.FOUND).location(uri).build();
     }
 
