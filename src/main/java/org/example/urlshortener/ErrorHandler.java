@@ -23,7 +23,7 @@ public class ErrorHandler {
     public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException exception){
         exception.getBindingResult().getFieldErrors();
         String errorMessage = exception.getBindingResult().getFieldErrors().stream()
-                .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .map(error -> error.getDefaultMessage())
                 .collect(Collectors.joining(", "));
         ErrorResponse errorResponse = new ErrorResponse(LocalDateTime.now(),400, errorMessage);
         return ResponseEntity.status(400).body(errorResponse);
