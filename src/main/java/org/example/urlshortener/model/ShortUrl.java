@@ -19,7 +19,7 @@ public class ShortUrl {
     private String shortCode;
 
     @Column(name = "clickscount")
-    private Integer clicksCount;
+    private long clicksCount;
 
     @Column(name = "createdat")
     private LocalDateTime createdAt;
@@ -36,7 +36,7 @@ public class ShortUrl {
         return shortCode;
     }
 
-    public Integer getClicksCount() {
+    public long getClicksCount() {
         return clicksCount;
     }
 
