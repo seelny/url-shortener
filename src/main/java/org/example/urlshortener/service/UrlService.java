@@ -41,6 +41,10 @@ public class UrlService {
         return urlRepository.findByShortCode(shortCode).orElseThrow(() -> new UrlNotFoundException("URL not found")).getOriginalUrl();
     }
 
+    public ShortUrl getStatsByShortCode(String shortCode){
+        return urlRepository.findByShortCode(shortCode).orElseThrow(() -> new UrlNotFoundException("URL not found"));
+    }
+
     @Transactional
     @CacheEvict(value = "urls", key = "#a0") // idk
     public void deleteUrl(String shortCode){

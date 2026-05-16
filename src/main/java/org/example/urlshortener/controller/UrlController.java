@@ -2,6 +2,7 @@ package org.example.urlshortener.controller;
 
 import jakarta.validation.Valid;
 import org.example.urlshortener.dto.UrlRequest;
+import org.example.urlshortener.model.ShortUrl;
 import org.example.urlshortener.service.UrlService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,10 +38,17 @@ public class UrlController {
         return ResponseEntity.status(HttpStatus.FOUND).location(uri).build();
     }
 
+    @GetMapping("/stats/{shortCode}")
+    public ResponseEntity<ShortUrl> getStats(@PathVariable String shortCode){
+        ShortUrl url = urlService.getStatsByShortCode(shortCode);
+        return ResponseEntity.ok(url);
+    }
+
     @PostMapping("/shorten")
     public String shortenUrl(@Valid @RequestBody UrlRequest request) {
         return urlService.createShortUrl(request.originalUrl());
     }
+
     @DeleteMapping("/{shortCode}")
     public ResponseEntity<Void> deleteUrl(@PathVariable String shortCode) {
         urlService.deleteUrl(shortCode);
