@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  postgres-db:
+    image: postgres:16-alpine
+    container_name: url_postgres
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+#    ports:
+#      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d ${DB_NAME}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  redis-db:
+    image: redis:7-alpine
+    container_name: url_redis
+#    ports:
+#      - "6379:6379"
+  springboot-app:
+    build: .
+    container_name: url_app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/${DB_NAME}
+      SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      SPRING_DATA_REDIS_HOST: redis-db
+      SPRING_DATA_REDIS_PORT: 6379
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+      redis-db:
+        condition: service_started
+volumes:
+  pgdata:
