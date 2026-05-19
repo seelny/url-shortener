@@ -30,7 +30,7 @@ public class UrlController {
 //        return shorten;
 //    }
 
-    @GetMapping("/{code}")
+    @GetMapping("/r/{code}")
     public ResponseEntity<Void> redirect(@PathVariable String code) {
         String url = urlService.getByShortCode(code);
         URI uri = URI.create(url);
