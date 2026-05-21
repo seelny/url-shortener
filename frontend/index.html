@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Сокращатель ссылок | URL Shortener</title>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .lang-switcher {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+        }
+
+        .lang-switcher button {
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            padding: 2px 5px;
+        }
+
+        .lang-switcher button.active {
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
+        }
+
+        .input-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input[type="url"], input[type="text"] {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input[type="url"]:focus, input[type="text"]:focus {
+            border-color: #007bff;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button.secondary-btn {
+            background-color: #28a745;
+        }
+
+        button.secondary-btn:hover {
+            background-color: #218838;
+        }
+
+        .divider {
+            height: 1px;
+            background-color: #e0e0e0;
+            margin: 25px 0;
+        }
+
+        h2 {
+            color: #555;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .result-box {
+            margin-top: 24px;
+            padding: 15px;
+            background-color: #e9f5ff;
+            border-radius: 8px;
+            border: 1px solid #b8dbff;
+            display: none;
+            text-align: center;
+        }
+
+        .result-box p {
+            margin: 0 0 8px 0;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .result-box a {
+            color: #007bff;
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        .result-box a:hover {
+            text-decoration: underline;
+        }
+
+        .stats-box {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            display: none;
+            text-align: left;
+            font-size: 15px;
+        }
+
+        .stats-box p {
+            margin: 6px 0;
+            color: #333;
+        }
+
+        .stats-box span {
+            font-weight: bold;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="lang-switcher">
+        <button id="langRu" class="active">RU</button>
+        <button id="langEn">EN</button>
+    </div>
+
+    <h1 data-i18n="title">Сокращатель ссылок</h1>
+
+    <div class="input-box">
+        <input type="url" id="longUrl" data-i18n-placeholder="placeholder" placeholder="Вставьте длинную ссылку сюда" required>
+        <button id="shortenBtn" data-i18n="button">Сократить</button>
+    </div>
+
+    <div id="resultBox" class="result-box">
+        <p data-i18n="result">Ваша короткая ссылка:</p>
+        <a href="#" id="shortLink" target="_blank"></a>
+    </div>
+
+    <div class="divider"></div>
+
+    <h2 data-i18n="statsTitle">Статистика ссылки</h2>
+    <div class="input-box">
+        <input type="text" id="statsCode" data-i18n-placeholder="statsPlaceholder" placeholder="Введите код ссылки (например, 1)">
+        <button id="statsBtn" class="secondary-btn" data-i18n="statsButton">Узнать</button>
+    </div>
+
+    <div id="statsBox" class="stats-box">
+        <p><span data-i18n="statsOrig">Оригинальный URL:</span> <a href="#" id="statsOrigUrl" target="_blank"></a></p>
+        <p><span data-i18n="statsClicks">Количество переходов:</span> <span id="statsClicksCount">0</span></p>
+    </div>
+
+</div>
+
+<script>
+    const translations = {
+        ru: {
+            title: "Сокращатель ссылок",
+            placeholder: "Вставьте длинную ссылку сюда",
+            button: "Сократить",
+            result: "Ваша короткая ссылка:",
+            statsTitle: "Статистика ссылки",
+            statsPlaceholder: "Введите код ссылки (например, 1)",
+            statsButton: "Узнать",
+            statsOrig: "Оригинальный URL:",
+            statsClicks: "Количество переходов:"
+        },
+        en: {
+            title: "URL Shortener",
+            placeholder: "Paste a long URL here",
+            button: "Shorten",
+            result: "Your short URL:",
+            statsTitle: "Link Statistics",
+            statsPlaceholder: "Enter link code (e.g., 1)",
+            statsButton: "Get Stats",
+            statsOrig: "Original URL:",
+            statsClicks: "Total clicks:"
+        }
+    };
+
+let currentLang = 'ru';
+
+function switchLanguage(lang) {
+    currentLang = lang;
+    document.getElementById('langRu').classList.toggle('active', lang === 'ru');
+    document.getElementById('langEn').classList.toggle('active', lang === 'en');
+    document.querySelectorAll('[data-i18n]').forEach(elem => {
+        const key = elem.getAttribute('data-i18n');
+        elem.textContent = translations[lang][key];
+    });
+
+    const urlInput = document.getElementById('longUrl');
+    urlInput.placeholder = translations[lang][urlInput.getAttribute('data-i18n-placeholder')];
+
+    const statsInput = document.getElementById('statsCode');
+    statsInput.placeholder = translations[lang][statsInput.getAttribute('data-i18n-placeholder')];
+}
+
+document.getElementById('langRu').addEventListener('click', () => switchLanguage('ru'));
+document.getElementById('langEn').addEventListener('click', () => switchLanguage('en'));
+
+document.getElementById('shortenBtn').addEventListener('click', async () => {
+    const longUrlInput = document.getElementById('longUrl');
+    const urlValue = longUrlInput.value.trim();
+
+    if (!urlValue) return;
+
+    try {
+        const response = await fetch('/shorten', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ originalUrl: urlValue })
+        });
+
+        if (response.ok) {
+            const code = await response.text();
+            const shortUrl = `${window.location.origin}/r/${code}`;
+            const resultBox = document.getElementById('resultBox');
+            const shortLink = document.getElementById('shortLink');
+
+            shortLink.href = shortUrl;
+            shortLink.textContent = shortUrl;
+            resultBox.style.display = 'block';
+        } else {
+            alert(currentLang === 'ru' ? 'Ошибка при создании ссылки' : 'Error creating link');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert(currentLang === 'ru' ? 'Сервер недоступен' : 'Server is unavailable');
+    }
+});
+
+document.getElementById('statsBtn').addEventListener('click', async () => {
+    const statsCodeInput = document.getElementById('statsCode');
+    const codeValue = statsCodeInput.value.trim();
+
+    if (!codeValue) return;
+
+    try {
+        const response = await fetch(`/stats/${codeValue}`);
+
+        if (response.ok) {
+            const data = await response.json();
+            const statsBox = document.getElementById('statsBox');
+            const statsOrigUrl = document.getElementById('statsOrigUrl');
+            const statsClicksCount = document.getElementById('statsClicksCount');
+
+            statsOrigUrl.href = data.originalUrl;
+            statsOrigUrl.textContent = data.originalUrl;
+            statsClicksCount.textContent = data.clicksCount;
+            statsBox.style.display = 'block';
+        } else {
+            alert(currentLang === 'ru' ? 'Код ссылки не найден' : 'Link code not found');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert(currentLang === 'ru' ? 'Сервер недоступен' : 'Server is unavailable');
+    }
+});
+</script>
+
+</body>
+</html>
